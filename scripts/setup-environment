@@ -27,6 +27,7 @@ targets=(
     "renesas"
     "rockchip"
     "sunxi"
+    "technexion"
     "tegra"
     "up"
     "variscite")

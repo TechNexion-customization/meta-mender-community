@@ -1,0 +1,25 @@
+From d63bd49624309d4c3f7caeda81b2d4d96389f326 Mon Sep 17 00:00:00 2001
+From: Po Cheng <po.cheng@technexion.com>
+Date: Thu, 27 Feb 2020 13:17:44 +0800
+Subject: [PATCH 3/3] env_mender header patch for fdtoverlay
+
+Signed-off-by: Po Cheng <po.cheng@technexion.com>
+---
+ include/env_mender.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/env_mender.h b/include/env_mender.h
+index 206247f..6ff7f22 100644
+--- a/include/env_mender.h
++++ b/include/env_mender.h
+@@ -141,6 +141,7 @@
+ # define MENDER_LOAD_KERNEL_AND_FDT                                     \
+     "if test \"${fdt_addr_r}\" != \"\"; then "                          \
+     "load ${mender_uboot_root} ${fdt_addr_r} /boot/${mender_dtb_name}; " \
++    "run loadoverlay; "                                                 \
+     "fi; "                                                              \
+     "load ${mender_uboot_root} ${loadaddr} /boot/${mender_kernel_name}; "
+ #endif
+-- 
+2.7.4
+
