@@ -10,6 +10,7 @@
   <remote fetch="git://github.com/meta-qt5"  name="QT5"/>
   <remote fetch="https://github.com/NXPNFCLinux" name="nfc"/>
   <remote fetch="https://github.com/TechNexion" name="tn-bsp" />
+  <remote fetch="https://github.com/TechNexion-customization" name="tn-custom" />
   <remote fetch="https://github.com/mendersoftware" name="mender"/>
 
   <project name="poky" remote="yocto" revision="c9bd4984f8f471ca2c43052714f4413ba99cf171" path="sources/poky"/>
@@ -34,7 +35,7 @@
   </project>
 
   <project name="meta-mender" remote="mender" revision="sumo" path="sources/meta-mender"/>
-  <project name="meta-mender-community" remote="mender" revision="sumo" path="sources/meta-mender-community">
+  <project name="meta-mender-community" remote="tn-custom" revision="sumo" path="sources/meta-mender-community">
     <linkfile src="meta-mender-technexion/scripts/setup-environment.sh" dest="setup-environment" />
   </project>
 
