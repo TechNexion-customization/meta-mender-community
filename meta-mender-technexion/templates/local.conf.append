@@ -38,5 +38,8 @@ IMAGE_CLASSES += "mender-setup-imx"
 #    env default -a
 #    saveenv
 #
+
+# TechNexion Specifics
 IMAGE_BOOT_FILES_append_uenv = " uEnv.txt"
 IMAGE_INSTALL_append = " kernel-image kernel-devicetree"
+PA_TOKEN ?= "SbtQ_mC4fvJRA88_9jB7"
