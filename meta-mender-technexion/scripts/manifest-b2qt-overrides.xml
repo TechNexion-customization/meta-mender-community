@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote fetch="git://code.qt.io/yocto" name="qtyocto"/>
+
+  <remove-project name="poky" />
+  <project name="poky" remote="yocto" revision="84b78df15ff77b2fe2aeb62fcaa265dce7ebfbbb" path="sources/poky"/>
+
+  <remove-project name="meta-fsl-bsp-release" />
+  <project name="meta-fsl-bsp-release" remote="CAF" revision="cb65aa03c70d0b88cdc2b06eb56ab59ae01f54bf" path="sources/meta-fsl-bsp-release" />
+
+  <remove-project name="meta-qt5" />
+  <project name="meta-qt5" remote="qtyocto" revision="0d0eca50521fcde987be3b97ffd29442db7435ff" path="sources/meta-qt5"/>
+  <project name="meta-mingw" remote="qtyocto" revision="628dcfed62ce8dcc408e5b4a5e5c0aaa921b20ad" path="sources/meta-mingw"/>
+
+  <project name="meta-boot2qt" remote="tn-custom" revision="sumo-tn-boot2qt-5.12.5-next" path="sources/meta-boot2qt" />
+</manifest>
+

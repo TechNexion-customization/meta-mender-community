@@ -18,10 +18,10 @@ MENDER_UBOOT_POST_SETUP_COMMANDS_pico-imx8mm = "setenv mender_dtb_name imx8mm-pi
 
 MENDER_UBOOT_PRE_SETUP_COMMANDS_pico-imx8mm = "run setbootargs"
 
-MENDER_STORAGE_TOTAL_SIZE_MB ?= "4096"
-MENDER_BOOT_PART_SIZE_MB = "16"
+MENDER_STORAGE_TOTAL_SIZE_MB ?= "5120"
+MENDER_BOOT_PART_SIZE_MB = "20"
 MENDER_DATA_PART_SIZE_MB = "1024"
-#IMAGE_ROOTFS_MAXSIZE ?= "2147483648"
+IMAGE_ROOTFS_MAXSIZE = "25165824"
 IMAGE_CLASSES += "mender-setup-imx"
 #IMAGE_OVERHEAD_FACTOR = "3.4"
 
@@ -44,6 +44,8 @@ IMAGE_BOOT_FILES_append_uenv = " uEnv.txt"
 IMAGE_INSTALL_append = " kernel-image kernel-devicetree"
 PA_TOKEN ?= "SbtQ_mC4fvJRA88_9jB7"
 
-BBMASK += "\
-    meta-boot2qt/meta-boot2qt-distro/recipes-qt/qt5/ogl-runtime_git.bbappend \
-"
+IMAGE_BOOTFILES_remove = "hello_world.bin rpmsg_lite_pingpong_rtos_linux_remote.bin rpmsg_lite_str_echo_rtos_imxcm4.bin"
+QBSP_IMAGE_CONTENT_remove = "${IMAGE_LINK_NAME}.img"
+QBSP_IMAGE_CONTENT_prepend = "${IMAGE_LINK_NAME}.sdimg"
+IMAGE_CLASSES_remove = "deploy-conf"
+IMAGE_CLASSES_append = " deploy-conf-b2qt"

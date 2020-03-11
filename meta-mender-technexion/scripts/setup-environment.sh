@@ -13,7 +13,8 @@ fi
 
 CWD=$(pwd)
 YOCTOSETUP="$CWD/sources/meta-tn-imx-bsp/tools/setup-environment.sh"
-MENDERSETUP="$CWD/scripts/setup-environment"
+QTSETUP="$CWD/sources/meta-boot2qt/scripts/setup-environment.sh"
+MENDERSETUP="$CWD/sources/poky/oe-init-build-env"
 
 TNCONFIGS=0
 if [ -n "$MACHINE" ]; then
@@ -77,18 +78,49 @@ fi
 mender_community_dir=$CWD/sources/meta-mender-community
 target_templates=$mender_community_dir/meta-mender-${target}/templates
 if [ -n "$MACHINE" ]; then
-  BUILDDIRECTORY=${BUILDDIRECTORY:-build-$MACHINE}
+  BUILDDIRECTORY="build-$MACHINE"
 else
-  BUILDDIRECTORY=${BUILDDIRECTORY:-build-$1}
+  BUILDDIRECTORY="build"
 fi
 mender_build_dir=$CWD/$BUILDDIRECTORY
 
 # Set up the basic yocto environment by sourcing fsl community's setup-environment bash script with/without TEMPLATECONF
 if [ $TNCONFIGS -gt 0 -a -n "$MACHINE" -a -n "$DISTRO" ] ; then
-  # TEMPLATECONF specifies where to get the bblayer and local conf samples
-  TEMPLATECONF="$CWD/sources/meta-tn-imx-bsp/conf" MACHINE=$MACHINE DISTRO=$DISTRO source $YOCTOSETUP $BUILDDIRECTORY
+  case "$DISTRO" in
+  "b2qt")
+    # copy local_manifest_b2qt.xml to .repo/local_manifests/
+    rm -rf ./build-$MACHINE/
+    mkdir -p .repo/local_manifests
+    cp sources/meta-mender-community/meta-mender-technexion/scripts/manifest-b2qt-overrides.xml .repo/local_manifests
+    # and repo sync --force-sync to update boot2qt repositories and layers
+    repo sync --force-sync
+    # finally setup the boot2qt build directory
+    echo "Setup Boot2qt:"
+    echo "    export MACHINE=$MACHINE"
+    echo "    source $QTSETUP"
+    echo ""
+    export MACHINE=$MACHINE
+    source $QTSETUP
+    ;;
+  *)
+    echo "Setup Yocto:"
+    echo "    TEMPLATECONF=$CWD/sources/meta-tn-imx-bsp/conf MACHINE=$MACHINE DISTRO=$DISTRO source $YOCTOSETUP $BUILDDIRECTORY"
+    echo ""
+    # clears .repo/local_manifests/ (and local_manifest_b2qt.xml)
+    rm -rf ./build-$MACHINE/
+    rm -rf .repo/local_manifests/manifest-b2qt-overrides.xml
+    # and repo sync --force-sync to source repositories
+    repo sync --force-sync
+    # finally setup the yocto build directory
+    # TEMPLATECONF specifies where to get the bblayer and local conf samples
+    TEMPLATECONF="$CWD/sources/meta-tn-imx-bsp/conf" MACHINE=$MACHINE DISTRO=$DISTRO source $YOCTOSETUP $BUILDDIRECTORY
+    ;;
+  esac
 else
-  MACHINE=$MACHINE DISTRO=$DISTRO source $YOCTOSETUP $BUILDDIRECTORY
+  echo "Setup Mender:"
+  echo "    source $MENDERSETUP $BUILDDIRECTORY"
+  echo ""
+  source $MENDERSETUP $BUILDDIRECTORY
 fi
 
 # mender setup
@@ -104,8 +136,16 @@ else
   cat $mender_community_dir/templates/local.conf.append >> ./conf/local.conf
 
   # Board specific entries
-  cp $target_templates/bblayers.conf.sample ./conf/bblayers.conf
-  cat $target_templates/local.conf.append >> ./conf/local.conf
+  case "$DISTRO" in
+  "b2qt")
+    cp $target_templates/bblayers.conf.sample.b2qt ./conf/bblayers.conf
+    cat $target_templates/local.conf.append.b2qt >> ./conf/local.conf
+    ;;
+  *)
+    cp $target_templates/bblayers.conf.sample ./conf/bblayers.conf
+    cat $target_templates/local.conf.append >> ./conf/local.conf
+    ;;
+  esac
 
   touch ./conf/mender_append_complete
 fi
