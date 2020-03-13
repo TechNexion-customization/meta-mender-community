@@ -21,10 +21,22 @@ Download the source:
            -b sumo
     $ repo sync
 
-Setup environment
-
-    $ . setup-environment technexion
-
-Build
-
+For building base image:
+Setup:
+    $ MACHINE=pico-imx8mm DISTRO=fsl-imx-xwayland source setup-environment technexion
+Build:
     $ bitbake core-image-base
+
+For building yocto test image:
+Setup:
+    $ MACHINE=pico-imx8mm DISTRO=fsl-imx-xwayland source setup-environment technexion
+Build:
+    $ bitbake fsl-image-qt5-validation-imx
+
+For building b2qt image:
+Setup:
+    $ export MACHINE=pico-imx8mm
+    $ MACHINE=pico-imx8mm DISTRO=b2qt source setup-environment technexion
+Build:
+    $ bitbake b2qt-embedded-qt5-image
+
