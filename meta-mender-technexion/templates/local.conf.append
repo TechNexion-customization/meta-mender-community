@@ -47,3 +47,7 @@ PA_TOKEN ?= "SbtQ_mC4fvJRA88_9jB7"
 BBMASK += "\
     meta-boot2qt/meta-boot2qt-distro/recipes-qt/qt5/ogl-runtime_git.bbappend \
 "
+
+PREFERRED_VERSION_pn-mender = "2.%"
+PREFERRED_VERSION_pn-mender-artifact = "3.%"
+PREFERRED_VERSION_pn-mender-artifact-native = "3.%"

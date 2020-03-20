@@ -49,3 +49,7 @@ QBSP_IMAGE_CONTENT_remove = "${IMAGE_LINK_NAME}.img"
 QBSP_IMAGE_CONTENT_prepend = "${IMAGE_LINK_NAME}.sdimg"
 IMAGE_CLASSES_remove = "deploy-conf"
 IMAGE_CLASSES_append = " deploy-conf-b2qt"
+
+PREFERRED_VERSION_pn-mender = "2.%"
+PREFERRED_VERSION_pn-mender-artifact = "3.%"
+PREFERRED_VERSION_pn-mender-artifact-native = "3.%"
