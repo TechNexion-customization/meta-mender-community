@@ -1,0 +1,53 @@
+# Appended fragment from meta-mender-community/meta-mender-technexion/templates
+MENDER_FEATURES_DISABLE_append = " mender-grub mender-image-uefi"
+
+MENDER_UBOOT_STORAGE_INTERFACE = "mmc"
+MENDER_UBOOT_STORAGE_DEVICE_pico-imx7 = "0"
+MENDER_STORAGE_DEVICE_pico-imx7 = "/dev/mmcblk1"
+#MENDER_UBOOT_ENV_STORAGE_DEVICE_OFFSET_1_pico-imx7 = "0x80000"
+#MENDER_UBOOT_ENV_STORAGE_DEVICE_OFFSET_2_pico-imx7 = "0xA0000"
+MENDER_IMAGE_BOOTLOADER_BOOTSECTOR_OFFSET_pico-imx7 = "2"
+MENDER_UBOOT_POST_SETUP_COMMANDS_pico-imx7 = "setenv mender_dtb_name imx7d-pico-pi-qca.dtb"
+
+MENDER_UBOOT_STORAGE_DEVICE_pico-imx8mm = "1"
+MENDER_STORAGE_DEVICE_pico-imx8mm = "/dev/mmcblk2"
+#MENDER_UBOOT_ENV_STORAGE_DEVICE_OFFSET_1_pico-imx8mm = "0x80000"
+#MENDER_UBOOT_ENV_STORAGE_DEVICE_OFFSET_2_pico-imx8mm = "0xA0000"
+MENDER_IMAGE_BOOTLOADER_BOOTSECTOR_OFFSET_pico-imx8mm = "66"
+MENDER_UBOOT_POST_SETUP_COMMANDS_pico-imx8mm = "setenv mender_dtb_name imx8mm-pico-pi-ili9881c.dtb"
+
+MENDER_UBOOT_PRE_SETUP_COMMANDS_pico-imx8mm = "run setbootargs"
+
+MENDER_STORAGE_TOTAL_SIZE_MB ?= "8176"
+MENDER_BOOT_PART_SIZE_MB = "20"
+MENDER_DATA_PART_SIZE_MB = "4080"
+IMAGE_ROOTFS_MAXSIZE = "25165824"
+IMAGE_CLASSES += "mender-setup-imx"
+#IMAGE_OVERHEAD_FACTOR = "3.4"
+
+# We install update.scr and u-boot in boot part because we need
+# to flash U-boot in first boot. The bootloader is stored on a
+# external EEPROM.
+#
+# To program U-boot we need to run:
+#
+#    run upgradeu
+#
+# and to make sure that correct U-boot env is used:
+#
+#    env default -a
+#    saveenv
+#
+
+# TechNexion Specifics
+IMAGE_BOOT_FILES_append_uenv = " uEnv.txt"
+IMAGE_INSTALL_append = " kernel-image kernel-devicetree"
+PA_TOKEN ?= "SbtQ_mC4fvJRA88_9jB7"
+
+BBMASK += "\
+    meta-boot2qt/meta-boot2qt-distro/recipes-qt/qt5/ogl-runtime_git.bbappend \
+"
+
+PREFERRED_VERSION_pn-mender = "2.%"
+PREFERRED_VERSION_pn-mender-artifact = "3.%"
+PREFERRED_VERSION_pn-mender-artifact-native = "3.%"

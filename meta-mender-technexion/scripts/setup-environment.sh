@@ -90,6 +90,7 @@ if [ $TNCONFIGS -gt 0 -a -n "$MACHINE" -a -n "$DISTRO" ] ; then
   "b2qt")
     # copy local_manifest_b2qt.xml to .repo/local_manifests/
     rm -rf ./build-$MACHINE/
+    rm -rf .repo/local_manifests/*overrides.xml
     mkdir -p .repo/local_manifests
     cp sources/meta-mender-community/meta-mender-technexion/scripts/manifest-b2qt-overrides.xml .repo/local_manifests
     # and repo sync --force-sync to update boot2qt repositories and layers
@@ -102,13 +103,41 @@ if [ $TNCONFIGS -gt 0 -a -n "$MACHINE" -a -n "$DISTRO" ] ; then
     export MACHINE=$MACHINE
     source $QTSETUP
     ;;
+  "virtualization")
+    # copy local_manifest_b2qt.xml to .repo/local_manifests/
+    rm -rf ./build-$MACHINE/
+    rm -rf .repo/local_manifests/*overrides.xml
+    mkdir -p .repo/local_manifests
+    cp sources/meta-mender-community/meta-mender-technexion/scripts/manifest-virtualization-overrides.xml .repo/local_manifests
+    # and repo sync --force-sync to update boot2qt repositories and layers
+    repo sync --force-sync
+    case "$MACHINE" in
+    *imx6ul)
+      DIST="fsl-imx-x11"
+      ;;
+    *imx6)
+      DIST="fsl-imx-x11"
+      ;;
+    *imx7)
+      DIST="fsl-imx-x11"
+      ;;
+    *)
+      DIST="fsl-imx-xwayland"
+      ;;
+    esac
+    # finally setup the yocto build directory
+    echo "Setup Virtualization/Container:"
+    echo "    TEMPLATECONF=$CWD/sources/meta-tn-imx-bsp/conf MACHINE=$MACHINE DISTRO=$DIST source $YOCTOSETUP $BUILDDIRECTORY"
+    echo ""
+    TEMPLATECONF="$CWD/sources/meta-tn-imx-bsp/conf" MACHINE=$MACHINE DISTRO=$DIST source $YOCTOSETUP $BUILDDIRECTORY
+    ;;
   *)
     echo "Setup Yocto:"
     echo "    TEMPLATECONF=$CWD/sources/meta-tn-imx-bsp/conf MACHINE=$MACHINE DISTRO=$DISTRO source $YOCTOSETUP $BUILDDIRECTORY"
     echo ""
     # clears .repo/local_manifests/ (and local_manifest_b2qt.xml)
     rm -rf ./build-$MACHINE/
-    rm -rf .repo/local_manifests/manifest-b2qt-overrides.xml
+    rm -rf .repo/local_manifests/*overrides.xml
     # and repo sync --force-sync to source repositories
     repo sync --force-sync
     # finally setup the yocto build directory
@@ -140,6 +169,10 @@ else
   "b2qt")
     cp $target_templates/bblayers.conf.sample.b2qt ./conf/bblayers.conf
     cat $target_templates/local.conf.append.b2qt >> ./conf/local.conf
+    ;;
+  "virtualization")
+    cp $target_templates/bblayers.conf.sample.virtualization ./conf/bblayers.conf
+    cat $target_templates/local.conf.append.virtualization >> ./conf/local.conf
     ;;
   *)
     cp $target_templates/bblayers.conf.sample ./conf/bblayers.conf

@@ -17,7 +17,7 @@ Download the source:
     $ cd technexion
     $ repo init \
            -u https://github.com/mendersoftware/meta-mender-community \
-           -m meta-mender-tn/scripts/manifest-technexion.xml \
+           -m meta-mender-technexion/scripts/manifest-technexion.xml \
            -b sumo
     $ repo sync
 
@@ -39,4 +39,10 @@ Setup:
     $ MACHINE=pico-imx8mm DISTRO=b2qt source setup-environment technexion
 Build:
     $ bitbake b2qt-embedded-qt5-image
+
+For building TechNexion Container OS image:
+Setup:
+    $ MACHINE=pico-imx8mm DISTRO=virtualization source setup-environment technexion
+Build:
+    $ bitbake tn-image-docker-os
 
