@@ -7,31 +7,31 @@ BBFILES ?= ""
 BSPDIR := "${@os.path.abspath(os.path.dirname(d.getVar('FILE')) + '/../..')}"
 
 BBLAYERS ?= " \
-  ${TOPDIR}/../sources/poky/meta \
-  ${TOPDIR}/../sources/poky/meta-poky \
-  ${TOPDIR}/../sources/poky/meta-yocto-bsp \
-  ${TOPDIR}/../sources/meta-mender/meta-mender-core \
-  ${TOPDIR}/../sources/meta-mender-community/meta-mender-technexion \
-  ${TOPDIR}/../sources/meta-mender-community/meta-mender-update-modules \
-  ${TOPDIR}/../sources/meta-freescale \
-  ${TOPDIR}/../sources/meta-freescale-3rdparty \
-  ${TOPDIR}/../sources/meta-freescale-distro \
-  ${TOPDIR}/../sources/meta-openembedded/meta-oe \
-  ${TOPDIR}/../sources/meta-openembedded/meta-multimedia \
-  ${TOPDIR}/../sources/meta-openembedded/meta-gnome \
-  ${TOPDIR}/../sources/meta-openembedded/meta-networking \
-  ${TOPDIR}/../sources/meta-openembedded/meta-python \
-  ${TOPDIR}/../sources/meta-openembedded/meta-initramfs \
-  ${TOPDIR}/../sources/meta-openembedded/meta-filesystems \
-  ${TOPDIR}/../sources/meta-fsl-bsp-release/imx/meta-bsp \
-  ${TOPDIR}/../sources/meta-fsl-bsp-release/imx/meta-sdk \
-  ${TOPDIR}/../sources/meta-boot2qt/meta-boot2qt \
-  ${TOPDIR}/../sources/meta-boot2qt/meta-boot2qt-distro \
-  ${TOPDIR}/../sources/meta-boot2qt/meta-fsl-extras \
-  ${TOPDIR}/../sources/meta-browser \
-  ${TOPDIR}/../sources/meta-qt5 \
-  ${TOPDIR}/../sources/meta-mingw \
-  ${TOPDIR}/../sources/meta-tn-imx-bsp \
-  ${TOPDIR}/../sources/meta-nxp-nfc \
+  ${BSPDIR}/sources/poky/meta \
+  ${BSPDIR}/sources/poky/meta-poky \
+  ${BSPDIR}/sources/poky/meta-yocto-bsp \
+  ${BSPDIR}/sources/meta-mender/meta-mender-core \
+  ${BSPDIR}/sources/meta-mender-community/meta-mender-technexion \
+  ${BSPDIR}/sources/meta-mender-community/meta-mender-update-modules \
+  ${BSPDIR}/sources/meta-freescale \
+  ${BSPDIR}/sources/meta-freescale-3rdparty \
+  ${BSPDIR}/sources/meta-freescale-distro \
+  ${BSPDIR}/sources/meta-openembedded/meta-oe \
+  ${BSPDIR}/sources/meta-openembedded/meta-multimedia \
+  ${BSPDIR}/sources/meta-openembedded/meta-gnome \
+  ${BSPDIR}/sources/meta-openembedded/meta-networking \
+  ${BSPDIR}/sources/meta-openembedded/meta-python \
+  ${BSPDIR}/sources/meta-openembedded/meta-initramfs \
+  ${BSPDIR}/sources/meta-openembedded/meta-filesystems \
+  ${BSPDIR}/sources/meta-fsl-bsp-release/imx/meta-bsp \
+  ${BSPDIR}/sources/meta-fsl-bsp-release/imx/meta-sdk \
+  ${BSPDIR}/sources/meta-boot2qt/meta-boot2qt \
+  ${BSPDIR}/sources/meta-boot2qt/meta-boot2qt-distro \
+  ${BSPDIR}/sources/meta-boot2qt/meta-fsl-extras \
+  ${BSPDIR}/sources/meta-browser \
+  ${BSPDIR}/sources/meta-qt5 \
+  ${BSPDIR}/sources/meta-mingw \
+  ${BSPDIR}/sources/meta-tn-imx-bsp \
+  ${BSPDIR}/sources/meta-nxp-nfc \
 "
 
