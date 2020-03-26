@@ -44,7 +44,6 @@ IMAGE_BOOT_FILES_append_uenv = " uEnv.txt"
 IMAGE_INSTALL_append = " kernel-image kernel-devicetree"
 PA_TOKEN ?= "SbtQ_mC4fvJRA88_9jB7"
 
-IMAGE_BOOTFILES_remove = "hello_world.bin rpmsg_lite_pingpong_rtos_linux_remote.bin rpmsg_lite_str_echo_rtos_imxcm4.bin"
 QBSP_IMAGE_CONTENT_remove = "${IMAGE_LINK_NAME}.img"
 QBSP_IMAGE_CONTENT_prepend = "${IMAGE_LINK_NAME}.sdimg"
 IMAGE_CLASSES_remove = "deploy-conf"
