@@ -169,6 +169,12 @@ else
   "b2qt")
     cp $target_templates/bblayers.conf.sample.b2qt ./conf/bblayers.conf
     cat $target_templates/local.conf.append.b2qt >> ./conf/local.conf
+    echo "BBMASK += \"meta-tn-imx-bsp/recipes-containers/docker-disk/docker-disk.bb\"" >> $PWD/conf/local.conf
+    echo "BBMASK += \"meta-tn-imx-bsp/recipes-containers/docker/docker_%.bbappend\"" >> $PWD/conf/local.conf
+    echo "BBMASK += \"meta-tn-imx-bsp/recipes-graphics/wayland/weston_%.bbappend\"" >> $PWD/conf/local.conf
+    echo "BBMASK += \"meta-tn-imx-bsp/recipes-qt/qt5/qtbase_%.bbappend\"" >> $PWD/conf/local.conf
+    echo "BBMASK += \"meta-mender-community/meta-mender-technexion/recipes-containers/docker-disk/docker-disk.bbappend\"" >> $PWD/conf/local.conf
+    echo "BBMASK += \"meta-mender-community/meta-mender-technexion/recipes-core/images/tn-image-docker-os.bbappend\"" >> $PWD/conf/local.conf
     ;;
   "virtualization")
     cp $target_templates/bblayers.conf.sample.virtualization ./conf/bblayers.conf
@@ -177,6 +183,7 @@ else
   *)
     cp $target_templates/bblayers.conf.sample ./conf/bblayers.conf
     cat $target_templates/local.conf.append >> ./conf/local.conf
+    echo "BBMASK += \"meta-mender-community/meta-mender-technexion/recipes-containers/docker-disk/docker-disk.bbappend\"" >> ./conf/local.conf
     ;;
   esac
 
