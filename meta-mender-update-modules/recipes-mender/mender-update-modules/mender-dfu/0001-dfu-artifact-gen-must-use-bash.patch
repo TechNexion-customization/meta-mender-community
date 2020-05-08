@@ -1,0 +1,23 @@
+From 158d543fef93a16a0e2e96ef3fe09fe967e3ae80 Mon Sep 17 00:00:00 2001
+From: Po Cheng <po.cheng@technexion.com>
+Date: Fri, 8 May 2020 10:47:14 +0800
+Subject: [PATCH] dfu-artifact-gen must use bash
+
+Signed-off-by: Po Cheng <po.cheng@technexion.com>
+---
+ dfu/module-artifact-gen/dfu-artifact-gen | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dfu/module-artifact-gen/dfu-artifact-gen b/dfu/module-artifact-gen/dfu-artifact-gen
+index 11a294a..acf88fd 100755
+--- a/dfu/module-artifact-gen/dfu-artifact-gen
++++ b/dfu/module-artifact-gen/dfu-artifact-gen
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ set -e
+ 
+-- 
+2.7.4
+
