@@ -4,6 +4,8 @@ require mender-update-modules.inc
 
 inherit allarch
 
+DEPENDS += "mender-dir-overlay-native"
+
 do_install_class-target() {
     install -d ${D}/${datadir}/mender/modules/v3
     install -m 755 ${S}/dir-overlay/module/dir-overlay ${D}/${datadir}/mender/modules/v3/dir-overlay
