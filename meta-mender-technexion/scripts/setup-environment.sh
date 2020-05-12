@@ -84,17 +84,56 @@ else
 fi
 mender_build_dir=$CWD/$BUILDDIRECTORY
 
+# Check if MACHINE and DISTRO are already in previous setup
+EXISTING="no"
+if [ -f $mender_build_dir/conf/local.conf ]; then
+  case "$DISTRO" in
+  "b2qt")
+    if grep -q "MACHINE_HOSTNAME.*b2qt" $mender_build_dir/conf/local.conf; then
+      if grep -q "DISTRO.*b2qt" $mender_build_dir/conf/local.conf; then
+        EXISTING="has"
+      fi
+    fi
+    ;;
+  "virtualization")
+    if grep -q "MACHINE ??= '${MACHINE}'" $mender_build_dir/conf/local.conf; then
+      if grep -Fq "BBMULTICONFIG = \"container\"" $mender_build_dir/conf/local.conf; then
+        if [ -d $CWD/sources/meta-virtualization ]; then
+          EXISTING="has"
+        fi
+      fi
+    fi
+    ;;
+  *)
+    if grep -q "MACHINE ??= '${MACHINE}'" $mender_build_dir/conf/local.conf; then
+      if grep -q "DISTRO ?= '${DISTRO}'" $mender_build_dir/conf/local.conf; then
+        if [ ! -d $CWD/sources/meta-virtualization ]; then
+          EXISTING="has"
+        fi
+      fi
+    fi
+    ;;
+  esac
+fi
+echo "$EXISTING existing configuration..."
+
+#
 # Set up the basic yocto environment by sourcing fsl community's setup-environment bash script with/without TEMPLATECONF
+# Only remove and reset the build environment when there is none or previous
+# configuration is different
+#
 if [ $TNCONFIGS -gt 0 -a -n "$MACHINE" -a -n "$DISTRO" ] ; then
   case "$DISTRO" in
   "b2qt")
-    # copy local_manifest_b2qt.xml to .repo/local_manifests/
-    rm -rf ./build-$MACHINE/
-    rm -rf .repo/local_manifests/*overrides.xml
-    mkdir -p .repo/local_manifests
-    cp sources/meta-mender-community/meta-mender-technexion/scripts/manifest-b2qt-overrides.xml .repo/local_manifests
-    # and repo sync --force-sync to update boot2qt repositories and layers
-    repo sync --force-sync
+    if [ "$EXISTING" = "no" ]; then
+      # copy local_manifest_b2qt.xml to .repo/local_manifests/
+      rm -rf ./build-$MACHINE/
+      rm -rf .repo/local_manifests/*overrides.xml
+      mkdir -p .repo/local_manifests
+      cp sources/meta-mender-community/meta-mender-technexion/scripts/manifest-b2qt-overrides.xml .repo/local_manifests
+      # and repo sync --force-sync to update boot2qt repositories and layers
+      repo sync --force-sync
+    fi
     # finally setup the boot2qt build directory
     echo "Setup Boot2qt:"
     echo "    export MACHINE=$MACHINE"
@@ -104,27 +143,29 @@ if [ $TNCONFIGS -gt 0 -a -n "$MACHINE" -a -n "$DISTRO" ] ; then
     source $QTSETUP
     ;;
   "virtualization")
-    # copy local_manifest_b2qt.xml to .repo/local_manifests/
-    rm -rf ./build-$MACHINE/
-    rm -rf .repo/local_manifests/*overrides.xml
-    mkdir -p .repo/local_manifests
-    cp sources/meta-mender-community/meta-mender-technexion/scripts/manifest-virtualization-overrides.xml .repo/local_manifests
-    # and repo sync --force-sync to update boot2qt repositories and layers
-    repo sync --force-sync
-    case "$MACHINE" in
-    *imx6ul)
-      DIST="fsl-imx-x11"
-      ;;
-    *imx6)
-      DIST="fsl-imx-x11"
-      ;;
-    *imx7)
-      DIST="fsl-imx-x11"
-      ;;
-    *)
-      DIST="fsl-imx-xwayland"
-      ;;
-    esac
+    if [ "$EXISTING" = "no" ]; then
+      # copy local_manifest_b2qt.xml to .repo/local_manifests/
+      rm -rf ./build-$MACHINE/
+      rm -rf .repo/local_manifests/*overrides.xml
+      mkdir -p .repo/local_manifests
+      cp sources/meta-mender-community/meta-mender-technexion/scripts/manifest-virtualization-overrides.xml .repo/local_manifests
+      # and repo sync --force-sync to update boot2qt repositories and layers
+      repo sync --force-sync
+      case "$MACHINE" in
+      *imx6ul)
+        DIST="fsl-imx-x11"
+        ;;
+      *imx6)
+        DIST="fsl-imx-x11"
+        ;;
+      *imx7)
+        DIST="fsl-imx-x11"
+        ;;
+      *)
+        DIST="fsl-imx-xwayland"
+        ;;
+      esac
+    fi
     # finally setup the yocto build directory
     echo "Setup Virtualization/Container:"
     echo "    TEMPLATECONF=$CWD/sources/meta-tn-imx-bsp/conf MACHINE=$MACHINE DISTRO=$DIST source $YOCTOSETUP $BUILDDIRECTORY"
@@ -132,15 +173,17 @@ if [ $TNCONFIGS -gt 0 -a -n "$MACHINE" -a -n "$DISTRO" ] ; then
     TEMPLATECONF="$CWD/sources/meta-tn-imx-bsp/conf" MACHINE=$MACHINE DISTRO=$DIST source $YOCTOSETUP $BUILDDIRECTORY
     ;;
   *)
+    if [ "$EXISTING" = "no" ]; then
+      # clears .repo/local_manifests/ (and local_manifest_b2qt.xml)
+      rm -rf ./build-$MACHINE/
+      rm -rf .repo/local_manifests/*overrides.xml
+      # and repo sync --force-sync to source repositories
+      repo sync --force-sync
+    fi
+    # finally setup the yocto build directory
     echo "Setup Yocto:"
     echo "    TEMPLATECONF=$CWD/sources/meta-tn-imx-bsp/conf MACHINE=$MACHINE DISTRO=$DISTRO source $YOCTOSETUP $BUILDDIRECTORY"
     echo ""
-    # clears .repo/local_manifests/ (and local_manifest_b2qt.xml)
-    rm -rf ./build-$MACHINE/
-    rm -rf .repo/local_manifests/*overrides.xml
-    # and repo sync --force-sync to source repositories
-    repo sync --force-sync
-    # finally setup the yocto build directory
     # TEMPLATECONF specifies where to get the bblayer and local conf samples
     TEMPLATECONF="$CWD/sources/meta-tn-imx-bsp/conf" MACHINE=$MACHINE DISTRO=$DISTRO source $YOCTOSETUP $BUILDDIRECTORY
     ;;
@@ -158,35 +201,55 @@ if [ -z "$target" ]; then
   usage
   return 1
 else
-  if [ -f ./conf/mender_append_complete ]; then
+  if [ -f ${mender_build_dir}/conf/mender_append_complete ]; then
     return 1
   fi
   # Common entries for Mender
-  cat $mender_community_dir/templates/local.conf.append >> ./conf/local.conf
+  cat $mender_community_dir/templates/local.conf.append >> ${mender_build_dir}/conf/local.conf
 
   # Board specific entries
   case "$DISTRO" in
   "b2qt")
-    cp $target_templates/bblayers.conf.sample.b2qt ./conf/bblayers.conf
-    cat $target_templates/local.conf.append.b2qt >> ./conf/local.conf
-    echo "BBMASK += \"meta-tn-imx-bsp/recipes-containers/docker-disk/docker-disk.bb\"" >> $PWD/conf/local.conf
-    echo "BBMASK += \"meta-tn-imx-bsp/recipes-containers/docker/docker_%.bbappend\"" >> $PWD/conf/local.conf
-    echo "BBMASK += \"meta-tn-imx-bsp/recipes-graphics/wayland/weston_%.bbappend\"" >> $PWD/conf/local.conf
-    echo "BBMASK += \"meta-tn-imx-bsp/recipes-qt/qt5/qtbase_%.bbappend\"" >> $PWD/conf/local.conf
-    echo "BBMASK += \"meta-mender-community/meta-mender-technexion/recipes-containers/docker-disk/docker-disk.bbappend\"" >> $PWD/conf/local.conf
-    echo "BBMASK += \"meta-mender-community/meta-mender-technexion/recipes-core/images/tn-image-docker-os.bbappend\"" >> $PWD/conf/local.conf
+    if [ "$EXISTING" = "no" ]; then
+      cp $target_templates/bblayers.conf.sample.b2qt ${mender_build_dir}/conf/bblayers.conf
+      cat $target_templates/local.conf.append.b2qt >> ${mender_build_dir}/conf/local.conf
+    fi
+    if ! grep -Fq "meta-tn-imx-bsp/recipes-containers/docker-disk/docker-disk.bb" ${mender_build_dir}/conf/local.conf; then
+      echo "BBMASK += \"meta-tn-imx-bsp/recipes-containers/docker-disk/docker-disk.bb\"" >> ${mender_build_dir}/conf/local.conf
+    fi
+    if ! grep -Fq "meta-tn-imx-bsp/recipes-containers/docker/docker_%.bbappend" ${mender_build_dir}/conf/local.conf; then
+      echo "BBMASK += \"meta-tn-imx-bsp/recipes-containers/docker/docker_%.bbappend\"" >> ${mender_build_dir}/conf/local.conf
+    fi
+    if ! grep -Fq "meta-tn-imx-bsp/recipes-graphics/wayland/weston_%.bbappend" ${mender_build_dir}/conf/local.conf; then
+      echo "BBMASK += \"meta-tn-imx-bsp/recipes-graphics/wayland/weston_%.bbappend\"" >> ${mender_build_dir}/conf/local.conf
+    fi
+    if ! grep -Fq "meta-tn-imx-bsp/recipes-qt/qt5/qtbase_%.bbappend" ${mender_build_dir}/conf/local.conf; then
+      echo "BBMASK += \"meta-tn-imx-bsp/recipes-qt/qt5/qtbase_%.bbappend\"" >> ${mender_build_dir}/conf/local.conf
+    fi
+    if ! grep -Fq "meta-mender-community/meta-mender-technexion/recipes-containers/docker-disk/docker-disk.bbappend" ${mender_build_dir}/conf/local.conf; then
+      echo "BBMASK += \"meta-mender-community/meta-mender-technexion/recipes-containers/docker-disk/docker-disk.bbappend\"" >> ${mender_build_dir}/conf/local.conf
+    fi
+    if ! grep -Fq "meta-mender-community/meta-mender-technexion/recipes-core/images/tn-image-docker-os.bbappend" ${mender_build_dir}/conf/local.conf; then
+      echo "BBMASK += \"meta-mender-community/meta-mender-technexion/recipes-core/images/tn-image-docker-os.bbappend\"" >> ${mender_build_dir}/conf/local.conf
+    fi
     ;;
   "virtualization")
-    cp $target_templates/bblayers.conf.sample.virtualization ./conf/bblayers.conf
-    cat $target_templates/local.conf.append.virtualization >> ./conf/local.conf
+    if [ "$EXISTING" = "no" ]; then
+      cp $target_templates/bblayers.conf.sample.virtualization ./conf/bblayers.conf
+      cat $target_templates/local.conf.append.virtualization >> ./conf/local.conf
+    fi
     ;;
   *)
-    cp $target_templates/bblayers.conf.sample ./conf/bblayers.conf
-    cat $target_templates/local.conf.append >> ./conf/local.conf
-    echo "BBMASK += \"meta-mender-community/meta-mender-technexion/recipes-containers/docker-disk/docker-disk.bbappend\"" >> ./conf/local.conf
+    if [ "$EXISTING" = "no" ]; then
+      cp $target_templates/bblayers.conf.sample ./conf/bblayers.conf
+      cat $target_templates/local.conf.append >> ./conf/local.conf
+    fi
+    if ! grep -Fq "meta-mender-community/meta-mender-technexion/recipes-containers/docker-disk/docker-disk.bbappend" ${mender_build_dir}/conf/local.conf; then
+      echo "BBMASK += \"meta-mender-community/meta-mender-technexion/recipes-containers/docker-disk/docker-disk.bbappend\"" >> ${mender_build_dir}/conf/local.conf
+    fi
     ;;
   esac
 
-  touch ./conf/mender_append_complete
+  touch ${mender_build_dir}/conf/mender_append_complete
 fi
 
