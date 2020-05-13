@@ -4,9 +4,6 @@
 
 Supported boards:
 
- - Pico-Pi i.MX7D
- - Pico-Pi i.MX6
- - Pico-Pi i.MX8MQ
  - Pico-Pi i.MX8MM
 
 ## Build
@@ -16,7 +13,7 @@ Download the source:
     $ mkdir technexion
     $ cd technexion
     $ repo init \
-           -u https://github.com/mendersoftware/meta-mender-community \
+           -u https://github.com/TechNexion-customization/meta-mender-community \
            -m meta-mender-technexion/scripts/manifest-technexion.xml \
            -b sumo
     $ repo sync
