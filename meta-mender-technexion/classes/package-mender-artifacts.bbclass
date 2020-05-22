@@ -82,6 +82,9 @@ mender_find_archived_package[vardepsexclude] = "OVERRIDES"
 mender_wrap_artifact () {
     ARTIFACT_NAME="${MENDER_PACKAGE_ARTIFACT}-${MENDER_PACKAGE_TYPE}"
     OUTPUT_PATH="${DEPLOY_DIR_IMAGE}/${ARTIFACT_NAME}-${MENDER_BUILD_NUMBER}.mender"
+    if [ ! -d ${DEPLOY_DIR_IMAGE} ]; then
+      mkdir -p ${DEPLOY_DIR_IMAGE}
+    fi
     mender-artifact write module-image -T ${MENDER_PACKAGE_TYPE} -n ${ARTIFACT_NAME} -t ${MACHINE} -o ${OUTPUT_PATH} -f ${MENDER_PACKAGE_PATH}
     bbnote "Generated mender artifact: ${OUTPUT_PATH}"
 }
