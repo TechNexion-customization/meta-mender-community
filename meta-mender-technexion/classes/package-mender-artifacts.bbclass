@@ -86,6 +86,9 @@ mender_wrap_artifact () {
       mkdir -p ${DEPLOY_DIR_IMAGE}
     fi
     mender-artifact write module-image -T ${MENDER_PACKAGE_TYPE} -n ${ARTIFACT_NAME} -t ${MACHINE} -o ${OUTPUT_PATH} -f ${MENDER_PACKAGE_PATH}
+    if [ -f "${MENDER_ARTIFACT_SIGNING_KEY}" ]; then
+        mender-artifact sign ${OUTPUT_PATH} -k ${MENDER_ARTIFACT_SIGNING_KEY} -o ${DEPLOY_DIR_IMAGE}/${ARTIFACT_NAME}-${MENDER_BUILD_NUMBER}.signed.mender
+    fi
     bbnote "Generated mender artifact: ${OUTPUT_PATH}"
 }
 mender_wrap_artifact[vardepsexclude] = "BB_NUMBER_THREADS"
