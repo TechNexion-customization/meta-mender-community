@@ -213,6 +213,7 @@ else
     if [ "$EXISTING" = "no" ]; then
       cp $target_templates/bblayers.conf.sample.b2qt ${mender_build_dir}/conf/bblayers.conf
       cat $target_templates/local.conf.append.b2qt >> ${mender_build_dir}/conf/local.conf
+      echo "IMAGE_FSTYPES_append_"$MACHINE" = \" sdimg.gz\"" >> ./conf/local.conf
     fi
     if ! grep -Fq "meta-tn-imx-bsp/recipes-containers/docker-disk/docker-disk.bb" ${mender_build_dir}/conf/local.conf; then
       echo "BBMASK += \"meta-tn-imx-bsp/recipes-containers/docker-disk/docker-disk.bb\"" >> ${mender_build_dir}/conf/local.conf
@@ -237,12 +238,14 @@ else
     if [ "$EXISTING" = "no" ]; then
       cp $target_templates/bblayers.conf.sample.virtualization ./conf/bblayers.conf
       cat $target_templates/local.conf.append.virtualization >> ./conf/local.conf
+      echo "IMAGE_FSTYPES_append_"$MACHINE" = \" sdimg.gz\"" >> ./conf/local.conf
     fi
     ;;
   *)
     if [ "$EXISTING" = "no" ]; then
       cp $target_templates/bblayers.conf.sample ./conf/bblayers.conf
       cat $target_templates/local.conf.append >> ./conf/local.conf
+      echo "IMAGE_FSTYPES_append_"$MACHINE" = \" sdimg.gz\"" >> ./conf/local.conf
     fi
     if ! grep -Fq "meta-mender-community/meta-mender-technexion/recipes-containers/docker-disk/docker-disk.bbappend" ${mender_build_dir}/conf/local.conf; then
       echo "BBMASK += \"meta-mender-community/meta-mender-technexion/recipes-containers/docker-disk/docker-disk.bbappend\"" >> ${mender_build_dir}/conf/local.conf
