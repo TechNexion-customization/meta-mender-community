@@ -15,8 +15,15 @@ MENDER_STORAGE_DEVICE_pico-imx8mm = "/dev/mmcblk2"
 #MENDER_UBOOT_ENV_STORAGE_DEVICE_OFFSET_2_pico-imx8mm = "0xA0000"
 MENDER_IMAGE_BOOTLOADER_BOOTSECTOR_OFFSET_pico-imx8mm = "66"
 MENDER_UBOOT_POST_SETUP_COMMANDS_pico-imx8mm = "setenv mender_dtb_name imx8mm-pico-pi-ili9881c.dtb"
-
 MENDER_UBOOT_PRE_SETUP_COMMANDS_pico-imx8mm = "run setbootargs"
+
+#MENDER_UBOOT_STORAGE_DEVICE_pico-imx8mq = "0"
+#MENDER_STORAGE_DEVICE_pico-imx8mq = "/dev/mmcblk2"
+#MENDER_UBOOT_ENV_STORAGE_DEVICE_OFFSET_1_pico-imx8mq = "0x80000"
+#MENDER_UBOOT_ENV_STORAGE_DEVICE_OFFSET_2_pico-imx8mq = "0xA0000"
+MENDER_IMAGE_BOOTLOADER_BOOTSECTOR_OFFSET_pico-imx8mq = "66"
+MENDER_UBOOT_POST_SETUP_COMMANDS_pico-imx8mq = "setenv mender_dtb_name imx8mq-pico-pi-dcss-ili9881c.dtb"
+MENDER_UBOOT_PRE_SETUP_COMMANDS_pico-imx8mq = "run setbootargs"
 
 MENDER_STORAGE_TOTAL_SIZE_MB ?= "8176"
 MENDER_BOOT_PART_SIZE_MB = "20"
@@ -46,6 +53,8 @@ PA_TOKEN ?= "SbtQ_mC4fvJRA88_9jB7"
 
 BBMASK += "\
     meta-boot2qt/meta-boot2qt-distro/recipes-qt/qt5/ogl-runtime_git.bbappend \
+    meta-tn-imx-bsp/recipes-python/pyqt4/ \
+    meta-tn-imx-bsp/recipes-qt/qt4/ \
 "
 
 PREFERRED_VERSION_pn-mender = "2.%"

@@ -227,6 +227,12 @@ else
     if ! grep -Fq "meta-tn-imx-bsp/recipes-qt/qt5/qtbase_%.bbappend" ${mender_build_dir}/conf/local.conf; then
       echo "BBMASK += \"meta-tn-imx-bsp/recipes-qt/qt5/qtbase_%.bbappend\"" >> ${mender_build_dir}/conf/local.conf
     fi
+    if ! grep -Fq "meta-tn-imx-bsp/recipes-qt/qt4/qt4-embedded_%.bbappend" ${mender_build_dir}/conf/local.conf; then
+      echo "BBMASK += \"meta-tn-imx-bsp/recipes-qt/qt4/qt4-embedded_%.bbappend\"" >> ${mender_build_dir}/conf/local.conf
+    fi
+    if ! grep -Fq "meta-tn-imx-bsp/recipes-python/pyqt4" ${mender_build_dir}/conf/local.conf; then
+      echo "BBMASK += \"meta-tn-imx-bsp/recipes-python/pyqt4\"" >> ${mender_build_dir}/conf/local.conf
+    fi
     if ! grep -Fq "meta-mender-community/meta-mender-technexion/recipes-containers/docker-disk/docker-disk.bbappend" ${mender_build_dir}/conf/local.conf; then
       echo "BBMASK += \"meta-mender-community/meta-mender-technexion/recipes-containers/docker-disk/docker-disk.bbappend\"" >> ${mender_build_dir}/conf/local.conf
     fi
