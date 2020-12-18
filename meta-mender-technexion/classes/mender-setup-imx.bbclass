@@ -2,7 +2,7 @@ IMAGE_FSTYPES_remove = "tar.bz2 ext4 sdcard.bz2 sdcard.xz sdcard.md5sum"
 
 # dummy value as the WIC plugin requires an entry but this will not be used
 # for anything beside to satisfy the build dependency
-IMAGE_BOOT_FILES_append = "u-boot-${MACHINE}.bin"
+IMAGE_BOOT_FILES_append = " u-boot-${MACHINE}.bin"
 
 MENDER_IMAGE_BOOTLOADER_FILE = "imx-boot-${MACHINE}-sd.bin"
 python __anonymous () {
